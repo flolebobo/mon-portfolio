@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Portfolio de Florent Segondi, développeur en formation.">
+  <title>Florent Segondi — Portfolio</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Applies the theme before first paint to avoid a flash: saved choice first, then system preference.
+       localStorage throws when storage is blocked (blocked cookies, some private modes) -->
+  <script>
+    let savedTheme = null;
+    try {
+      savedTheme = localStorage.getItem('theme');
+    } catch {}
+    document.documentElement.dataset.theme = savedTheme
+      || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  </script>
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Aller au contenu</a>
+
+  <header>
+    <nav class="navbar" aria-label="Navigation principale">
+      <a class="navbar__logo" href="#hero">Florent Segondi</a>
+      <ul class="navbar__menu" id="navbar-menu">
+        <li><a class="navbar__link" href="#about">À propos</a></li>
+        <li><a class="navbar__link" href="#projects">Projets</a></li>
+        <li><a class="navbar__link" href="#contact">Contact</a></li>
+      </ul>
+      <button class="theme-toggle" type="button" aria-label="Activer le mode clair">
+        <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="5"/>
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <button class="navbar__toggle" type="button" aria-expanded="false" aria-controls="navbar-menu" aria-label="Menu">
+        <span class="navbar__toggle-bar"></span>
+        <span class="navbar__toggle-bar"></span>
+        <span class="navbar__toggle-bar"></span>
+      </button>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="hero">
+      <h1 class="hero__title">Florent Segondi</h1>
+      <p class="hero__subtitle">Développeur en formation</p>
+      <p class="hero__tagline">Je construis des projets concrets avec l'IA.</p>
+      <a class="button hero__cta" href="#projects">Voir mes projets</a>
+    </section>
+
+    <section class="section" id="about">
+      <h2 class="section-title">À propos</h2>
+      <div class="about">
+        <div class="about__photo" aria-hidden="true">Photo</div>
+        <p class="about__text">Passionné par la technologie et l'intelligence artificielle, j'apprends à construire des projets concrets en utilisant les outils les plus avancés du marché. Ce portfolio est lui-même construit avec Claude Code.</p>
+      </div>
+    </section>
+
+    <section class="section" id="projects">
+      <h2 class="section-title">Mes Projets</h2>
+      <div class="project-list" id="project-list"></div>
+    </section>
+
+    <section class="section" id="contact">
+      <h2 class="section-title">Me contacter</h2>
+      <form class="contact-form" id="contact-form">
+        <p class="contact-form__note">Tous les champs sont obligatoires.</p>
+        <div class="contact-form__field">
+          <label class="contact-form__label" for="contact-name">Nom</label>
+          <input class="contact-form__input" type="text" id="contact-name" name="name" autocomplete="name" required>
+        </div>
+        <div class="contact-form__field">
+          <label class="contact-form__label" for="contact-email">Email</label>
+          <input class="contact-form__input" type="email" id="contact-email" name="email" autocomplete="email" required>
+        </div>
+        <div class="contact-form__field">
+          <label class="contact-form__label" for="contact-message">Message</label>
+          <textarea class="contact-form__input" id="contact-message" name="message" rows="6" required></textarea>
+        </div>
+        <button class="button contact-form__button" type="submit">Envoyer</button>
+      </form>
+      <p class="contact-form__status" id="contact-form-status" role="status"></p>
+      <ul class="contact-list">
+        <li><a href="mailto:florent.segondi@gmail.com">florent.segondi@gmail.com</a></li>
+        <li><a href="https://github.com/flolebobo" target="_blank" rel="noopener" aria-label="github.com/flolebobo (nouvel onglet)">github.com/flolebobo</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p class="footer__copyright">© 2026 Florent Segondi</p>
+    <ul class="footer__links">
+      <li><a class="footer__link" href="https://github.com/flolebobo" target="_blank" rel="noopener" aria-label="GitHub (nouvel onglet)">GitHub</a></li>
+      <li><a class="footer__link" href="#">LinkedIn</a></li>
+    </ul>
+    <p class="footer__credit">Construit avec Claude Code</p>
+  </footer>
+</body>
+</html>

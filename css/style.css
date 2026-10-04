@@ -1,0 +1,573 @@
+/* ===== Reset ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* No image yet: kept for the upcoming profile photo (placeholder in the About section) */
+img {
+  display: block;
+  max-width: 100%;
+}
+
+ul {
+  list-style: none;
+}
+
+/* ===== Variables ===== */
+/* Registering the colors as <color> lets the browser animate them:
+   unregistered custom properties switch instantly, with no transition */
+@property --color-bg { syntax: '<color>'; inherits: true; initial-value: #0a0a0a; }
+@property --color-surface { syntax: '<color>'; inherits: true; initial-value: #171a21; }
+@property --color-text { syntax: '<color>'; inherits: true; initial-value: #e0e0e0; }
+@property --color-text-muted { syntax: '<color>'; inherits: true; initial-value: #9aa0a8; }
+@property --color-accent { syntax: '<color>'; inherits: true; initial-value: #64ffda; }
+@property --color-border { syntax: '<color>'; inherits: true; initial-value: #2a2f3a; }
+
+/* Dark theme (default) */
+:root {
+  --color-bg: #0a0a0a;
+  --color-surface: #171a21;
+  --color-text: #e0e0e0;
+  --color-text-muted: #9aa0a8;
+  --color-accent: #64ffda;
+  --color-border: #2a2f3a;
+  --color-scheme: dark;
+  --theme-icon-sun: none;
+  --theme-icon-moon: block;
+
+  --font-main: 'Inter', sans-serif;
+
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-card-raised: 0 12px 24px rgba(0, 0, 0, 0.4);
+
+  color-scheme: var(--color-scheme);
+  transition:
+    --color-bg 0.3s,
+    --color-surface 0.3s,
+    --color-text 0.3s,
+    --color-text-muted 0.3s,
+    --color-accent 0.3s,
+    --color-border 0.3s;
+}
+
+/* Set on <html> by the inline script in index.html and by js/main.js */
+:root[data-theme="light"] {
+  --color-bg: #ffffff;
+  --color-surface: #f5f5f5;
+  --color-text: #1a1a1a;
+  --color-text-muted: #555b65;
+  --color-accent: #0a7a60;
+  --color-border: #d9dce1;
+  --color-scheme: light;
+  --theme-icon-sun: block;
+  --theme-icon-moon: none;
+}
+
+/* ===== Base ===== */
+html {
+  scroll-behavior: smooth;
+  /* Keeps section titles from hiding under the fixed navbar */
+  scroll-padding-top: 4rem;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-main);
+  font-size: clamp(1rem, 0.95rem + 0.3vw, 1.1rem);
+  line-height: 1.7;
+}
+
+/* ===== Typography ===== */
+h1,
+h2,
+h3 {
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+/* rem + vw (instead of vw alone) keeps text scaling with browser zoom */
+h1 {
+  font-size: clamp(2.25rem, 1.5rem + 3.5vw, 3.5rem);
+}
+
+h2 {
+  font-size: clamp(1.5rem, 1.25rem + 1.5vw, 2rem);
+}
+
+.section-title {
+  margin-bottom: 2rem;
+}
+
+.section-title::after {
+  content: '';
+  display: block;
+  width: 3rem;
+  height: 3px;
+  margin-top: 0.75rem;
+  border-radius: 2px;
+  background-color: var(--color-accent);
+}
+
+h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+p {
+  color: var(--color-text-muted);
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+a:hover,
+a:focus-visible {
+  text-decoration: underline;
+}
+
+/* ===== Button ===== */
+/* Shared by <a> and <button>: font: inherit undoes the browser's button font */
+.button {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--color-accent);
+  border: none;
+  border-radius: 0.5rem;
+  color: var(--color-bg);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+/* Mixing with the text color (not opacity) moves away from --color-bg in both themes,
+   so the label contrast goes up on hover instead of dropping below 4.5:1 in light mode */
+.button:hover,
+.button:focus-visible {
+  text-decoration: none;
+  background-color: color-mix(in srgb, var(--color-accent) 85%, var(--color-text));
+}
+
+/* ===== Skip link ===== */
+/* Off-screen until it gets keyboard focus; above the fixed navbar */
+.skip-link {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 200;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--color-accent);
+  color: var(--color-bg);
+  font-weight: 600;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+/* ===== Navbar ===== */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 4rem;
+  padding: 0 1rem;
+}
+
+/* Blur sits on a pseudo-element: backdrop-filter on .navbar itself
+   would trap the fixed full-screen mobile menu inside the bar */
+.navbar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-color: color-mix(in srgb, var(--color-bg) 75%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.navbar__logo {
+  margin-right: auto;
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+/* Sits above the full-screen mobile menu, like the hamburger button */
+.theme-toggle {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  padding: 0.5rem;
+  background: none;
+  border: none;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.theme-toggle__icon--sun {
+  display: var(--theme-icon-sun);
+}
+
+.theme-toggle__icon--moon {
+  display: var(--theme-icon-moon);
+}
+
+.navbar__toggle {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.navbar__toggle-bar {
+  width: 24px;
+  height: 2px;
+  background-color: var(--color-text);
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+/* 7px = bar height + gap: moves the outer bars onto the middle one to form an X */
+.navbar--open .navbar__toggle-bar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.navbar--open .navbar__toggle-bar:nth-child(2) {
+  opacity: 0;
+}
+
+.navbar--open .navbar__toggle-bar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.navbar__menu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  background-color: var(--color-bg);
+}
+
+.navbar--open .navbar__menu {
+  display: flex;
+}
+
+.navbar__link {
+  color: var(--color-text);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* ===== Layout ===== */
+.hero,
+.section,
+.footer {
+  padding: 3rem 1rem;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+.footer__links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+/* ===== Section fade-in (classes added by js/main.js) ===== */
+.section--animated {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.section--visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ===== Hero ===== */
+.hero {
+  min-height: 100vh;
+  /* svh excludes the mobile address bar; 100vh above is the fallback for older browsers */
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.hero__subtitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.hero__tagline {
+  max-width: 32rem;
+}
+
+.hero__cta {
+  margin-top: 1rem;
+}
+
+/* ===== About ===== */
+.about {
+  display: grid;
+  gap: 2rem;
+}
+
+.about__photo {
+  width: 100%;
+  max-width: 16rem;
+  aspect-ratio: 1;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-text-muted);
+  border-radius: 0.5rem;
+  color: var(--color-text-muted);
+}
+
+/* ===== Projects ===== */
+.project-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-surface);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Written twice because hover must stay inside the media query while focus applies everywhere */
+.project-card:focus-within {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-raised);
+}
+
+/* Hover only on devices that really hover: on touch screens a tap would leave the card lifted */
+@media (hover: hover) {
+  .project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-raised);
+  }
+}
+
+.project-card__banner {
+  height: 0.5rem;
+  background-color: var(--color-accent);
+}
+
+.project-card__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+.project-card__date {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+}
+
+.project-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.project-card__tag {
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--color-accent);
+  border-radius: 999px;
+  color: var(--color-accent);
+  font-size: 0.8125rem;
+}
+
+/* Pushes the link to the bottom so links align across cards of different heights */
+.project-card__link {
+  margin-top: auto;
+  font-weight: 600;
+}
+
+/* Error message shown when data/projects.json can't be loaded; spans every grid column */
+.project-list__message {
+  grid-column: 1 / -1;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+/* ===== Contact ===== */
+.contact-form {
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.contact-form__note {
+  font-size: 0.875rem;
+}
+
+.contact-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.contact-form__label {
+  font-weight: 600;
+}
+
+.contact-form__input {
+  padding: 0.75rem 1rem;
+  background-color: var(--color-surface);
+  /* Not --color-border: form fields need a 3:1 contrast to be identifiable (WCAG 1.4.11) */
+  border: 1px solid var(--color-text-muted);
+  border-radius: 0.5rem;
+  color: var(--color-text);
+  font: inherit;
+}
+
+/* Browser autofill forces a light background that background-color can't override:
+   a large inset shadow covers it with the theme color instead */
+.contact-form__input:-webkit-autofill {
+  box-shadow: 0 0 0 100vmax var(--color-surface) inset;
+  -webkit-text-fill-color: var(--color-text);
+  caret-color: var(--color-text);
+}
+
+/* A border color change alone is too subtle (1.3:1 in light mode): the outline makes focus obvious */
+.contact-form__input:focus {
+  border-color: var(--color-accent);
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+textarea.contact-form__input {
+  resize: vertical;
+}
+
+.contact-form__button {
+  align-self: flex-start;
+}
+
+/* Stays empty (no height) until js/main.js writes a message after submit */
+.contact-form__status {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.contact-form__status:not(:empty) {
+  margin-bottom: 2rem;
+}
+
+.contact-list {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ===== Tablet and up ===== */
+@media (min-width: 768px) {
+  .hero,
+  .section,
+  .footer {
+    padding: 5rem 2rem;
+  }
+
+  .navbar {
+    gap: 1.5rem;
+    padding: 0 2rem;
+  }
+
+  .navbar__toggle {
+    display: none;
+  }
+
+  .navbar__menu {
+    display: flex;
+    position: static;
+    flex-direction: row;
+    background: none;
+  }
+
+  .navbar__link {
+    font-size: 1rem;
+  }
+
+  .hero__subtitle {
+    font-size: 1.5rem;
+  }
+
+  .about {
+    grid-template-columns: 16rem 1fr;
+    align-items: center;
+    gap: 3rem;
+  }
+
+  .project-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ===== Desktop and up ===== */
+@media (min-width: 1024px) {
+  .project-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ===== Reduced motion ===== */
+/* !important so this wins over every transition declared above */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+  }
+}

@@ -1,0 +1,23 @@
+[
+  {
+    "name": "DerivativesTools",
+    "description": "Packages Python pour les stratégies, la gestion des risques et la valorisation de produits dérivés.",
+    "languages": ["Python"],
+    "url": "https://github.com/flolebobo/DerivativesTools",
+    "lastUpdated": "2022-04-09"
+  },
+  {
+    "name": "hello-python",
+    "description": "Un script Python simple.",
+    "languages": ["Python"],
+    "url": "https://github.com/flolebobo/hello-python",
+    "lastUpdated": "2026-09-27"
+  },
+  {
+    "name": "notes-cli",
+    "description": "Outil de prise de notes en ligne de commande (à venir).",
+    "languages": [],
+    "url": "https://github.com/flolebobo/notes-cli",
+    "lastUpdated": "2026-09-27"
+  }
+]
